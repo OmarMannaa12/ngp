@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=3 uid="uid://vte7xr0i0c8d"]
+
+[ext_resource type="Script" path="res://Game/Game.gd" id="1_3pq4s"]
+[ext_resource type="PackedScene" uid="uid://cv5jqn44unscs" path="res://Player/player.tscn" id="2_i2joy"]
+[ext_resource type="Script" path="res://omni_light_3d.gd" id="5_wgjbl"]
+[ext_resource type="PackedScene" uid="uid://wxs6sstck6n4" path="res://Hollow/hollow.tscn" id="6_1n8sy"]
+[ext_resource type="PackedScene" uid="uid://cpccgxglpbowe" path="res://collectable.tscn" id="7_voywx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rj3o5"]
+
+[sub_resource type="Environment" id="Environment_m4ko1"]
+background_mode = 2
+fog_light_color = Color(0.261951, 0.28694, 0.326222, 1)
+fog_light_energy = 0.32
+fog_density = 0.0685
+
+[node name="Game" type="Node3D"]
+script = ExtResource("1_3pq4s")
+
+[node name="Player" parent="." instance=ExtResource("2_i2joy")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18556, -24.4398)
+light_energy = 0.459
+script = ExtResource("5_wgjbl")
+
+[node name="Area3D" type="Area3D" parent="OmniLight3D"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OmniLight3D/Area3D"]
+shape = SubResource("BoxShape3D_rj3o5")
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.2422, 2.18556, -5.44813)
+light_energy = 0.459
+script = ExtResource("5_wgjbl")
+
+[node name="Area3D" type="Area3D" parent="OmniLight3D2"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OmniLight3D2/Area3D"]
+shape = SubResource("BoxShape3D_rj3o5")
+
+[node name="Hollow" parent="." instance=ExtResource("6_1n8sy")]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(265.971, 0, 0, 0, 1, 0, 0, 0, 266.318, 0, -0.137825, -11.4434)
+use_collision = true
+size = Vector3(1, 1, 1.08594)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.0234376, 0.999725, 0, -0.999725, 0.0234376, 0, 56.5428, -0.356255)
+spot_range = 123.092
+spot_attenuation = 0.52
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m4ko1")
+
+[node name="Collectable" parent="." instance=ExtResource("7_voywx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.54111, 1.04887, 16.3347)
+
+[node name="Collectable2" parent="." instance=ExtResource("7_voywx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.54111, 1.04887, 6.45579)
+
+[connection signal="body_entered" from="OmniLight3D/Area3D" to="OmniLight3D" method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="OmniLight3D/Area3D" to="OmniLight3D" method="_on_area_3d_body_exited"]
+[connection signal="body_entered" from="OmniLight3D2/Area3D" to="OmniLight3D2" method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="OmniLight3D2/Area3D" to="OmniLight3D2" method="_on_area_3d_body_exited"]

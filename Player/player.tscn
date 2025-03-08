@@ -1,0 +1,96 @@
+[gd_scene load_steps=11 format=3 uid="uid://cv5jqn44unscs"]
+
+[ext_resource type="Script" path="res://Player/player.gd" id="1_u3kky"]
+[ext_resource type="Script" path="res://Player/camera_3d.gd" id="2_mamrp"]
+[ext_resource type="Texture2D" uid="uid://cekplctqx0qav" path="res://icon.svg" id="3_s01bs"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ayvw2"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wil41"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4jdsa"]
+albedo_color = Color(0.387776, 0.396896, 0.366018, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vl84y"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_haajp"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_vbv08"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ruucb"]
+
+[node name="Player" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.18496, 0)
+script = ExtResource("1_u3kky")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_ayvw2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_wil41")
+
+[node name="Vision" type="MeshInstance3D" parent="."]
+transform = Transform3D(4.24833, 0, 0, 0, 1, 0, 0, 0, 6.95338, 0, 0, 3.5351)
+material_override = SubResource("StandardMaterial3D_4jdsa")
+mesh = SubResource("BoxMesh_vl84y")
+
+[node name="Area3D" type="Area3D" parent="Vision"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Vision/Area3D"]
+shape = SubResource("BoxShape3D_haajp")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.999121, -0.000352719, 0.0419265, 1.87083e-10, 0.999964, 0.00841251, -0.041928, 0.00840511, -0.999085, 0, 0.398181, 0.135321)
+script = ExtResource("2_mamrp")
+
+[node name="Pickable" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(-2.19701, 1.74623e-10, -0.0916174, -0.000775611, 0.999965, 0.0183661, 0.0921941, 0.00841251, -2.18311, -0.0429671, -0.389553, -1.0272)
+mesh = SubResource("BoxMesh_vbv08")
+skeleton = NodePath("../..")
+
+[node name="PickableArea" type="Area3D" parent="Camera3D/Pickable"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/Pickable/PickableArea"]
+shape = SubResource("BoxShape3D_ruucb")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Items" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 239.0
+offset_top = 525.0
+offset_right = 895.0
+offset_bottom = 653.0
+scale = Vector2(0.659635, 0.5898)
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Items"]
+layout_mode = 2
+texture = ExtResource("3_s01bs")
+expand_mode = 2
+
+[node name="Button" type="Button" parent="CanvasLayer/Items/TextureRect" groups=["Items Buttons"]]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+scale = Vector2(16, 16)
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_left = 37.0
+offset_top = 37.0
+offset_right = 223.0
+offset_bottom = 60.0
+scale = Vector2(1.35372, 1.57363)
+text = "To take the Item press E"
+
+[node name="ButtonLabel" type="Label" parent="CanvasLayer"]
+offset_left = 213.0
+offset_top = 470.0
+offset_right = 356.0
+offset_bottom = 519.0
+text = "Press Space to use
+Press R to remove"
+
+[connection signal="body_entered" from="Vision/Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Vision/Area3D" to="." method="_on_area_3d_body_exited"]
+[connection signal="body_entered" from="Camera3D/Pickable/PickableArea" to="." method="_on_pickable_area_body_entered"]
+[connection signal="body_exited" from="Camera3D/Pickable/PickableArea" to="." method="_on_pickable_area_body_exited"]

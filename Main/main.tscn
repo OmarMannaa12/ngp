@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://teh2bo674otj"]
+
+[ext_resource type="Script" path="res://Main/main.gd" id="1_nq03a"]
+
+[node name="Main" type="Node2D"]
+position = Vector2(-0.0043143, 0)
+script = ExtResource("1_nq03a")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 344.004
+offset_top = 87.0
+offset_right = 384.004
+offset_bottom = 127.0
+scale = Vector2(8.59266, 10.3468)
+
+[node name="StartButton" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 12.4525
+offset_top = 3.79514
+offset_right = 58.4525
+offset_bottom = 34.7951
+scale = Vector2(0.289499, 0.224397)
+text = "Start"
+
+[node name="SettingsButton" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 9.42665
+offset_top = 16.2369
+offset_right = 79.4267
+offset_bottom = 47.2369
+scale = Vector2(0.289499, 0.224397)
+text = "Settings"
+
+[node name="Button3" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 10.2413
+offset_top = 27.6415
+offset_right = 73.2413
+offset_bottom = 58.6415
+scale = Vector2(0.289499, 0.224397)
+text = "Credits"
+
+[connection signal="pressed" from="Panel/StartButton" to="." method="_on_start_button_pressed"]

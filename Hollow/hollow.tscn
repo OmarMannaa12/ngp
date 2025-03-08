@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://wxs6sstck6n4"]
+
+[ext_resource type="Script" path="res://Hollow/hollow.gd" id="1_ajrk2"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_gicyn"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v14xq"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_03a7r"]
+
+[node name="Hollow" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.63318, 8.40423)
+script = ExtResource("1_ajrk2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_gicyn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_v14xq")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.996377, 0.302291, -0.00100091, 0, 0.0369106, 1.13318, 0.0850518, 3.54132, -0.0117256, 0, 0, 2.44422)
+mesh = SubResource("PrismMesh_03a7r")
