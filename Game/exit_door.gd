@@ -1,4 +1,4 @@
-class_name ExitDoor extends Interactable
+extends Interactable
 
 func _init()-> void:
 	super._init()

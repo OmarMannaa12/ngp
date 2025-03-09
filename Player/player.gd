@@ -1,6 +1,6 @@
 class_name Player extends CharacterBody3D
 
-var SPEED = 10.0:
+var SPEED: float = 10.0:
 		set(value):
 			if value <= 1:
 				SPEED = 1
@@ -11,6 +11,13 @@ var SPEED = 10.0:
 			return SPEED
 const JUMP_VELOCITY = 6.0
 const MOUSE_SENSITIVITY = 0.1
+
+var coins: int:
+	set(value):
+		if value < 0:
+			value = 0
+		coins = value
+		coins_label.text = str("Coins: ", coins)
 
 var pickable_items: Array[Collectable] = []
 var interactable_items: Array[Interactable] = []
@@ -24,12 +31,13 @@ var selected_item_rect: TextureRect
 @onready var camera = $Camera3D
 @onready var main_label = $CanvasLayer/Label
 @onready var button_label = $CanvasLayer/ButtonLabel
+@onready var coins_label = $CanvasLayer/CoinsLabel
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	button_label.visible = false
 
 func _physics_process(delta):
-
+	$CanvasLayer/Label2.text = "FPS: " + str(Engine.get_frames_per_second())
 	if not is_on_floor():
 			velocity.y -= gravity * delta
 	
@@ -72,25 +80,17 @@ func _unhandled_input(event):
 		if inventory.size() < 5 and pickable_items.size() > 0:
 			for item: Collectable in pickable_items:
 				if inventory.size() < 5:
-					main_label.visible = false
+					if item.type == 0: # Coin
+						coins += 1
+					else:
+						UIinventory_add(item)
 					item.visible = false
 					item.process_mode = PROCESS_MODE_DISABLED
-					
 					pickable_items.erase(item)
 					inventory.push_back(item)
-					
-					var texture_rect = TextureRect.new()
-					var item_button = Button.new()
-					texture_rect.texture = preload("res://icon.svg")
-					$CanvasLayer/Items.add_child(texture_rect)
-					texture_rect.add_child(item_button)
-					item_button.scale = Vector2(16,16)
-					item_button.modulate.a = 0	
-					item.visible = false
+
 					SPEED -= item.weight
-				
-					item_button.name = "Button_" + str(item.get_instance_id())
-					item_button.pressed.connect(_on_item_button_pressed.bind(item, texture_rect, item_button))
+			main_label.visible = false
 			return
 		elif pickable_items.size() > 0:
 			main_label.visible = true
@@ -126,7 +126,18 @@ func _on_item_button_pressed(item: Collectable, texture_rect: TextureRect, item_
 	selected_item = item
 	selected_item_rect = texture_rect
 	
-
+func UIinventory_add(item) -> void:
+	var texture_rect = TextureRect.new()
+	var item_button = Button.new()
+	texture_rect.texture = preload("res://icon.svg")
+	$CanvasLayer/Items.add_child(texture_rect)
+	texture_rect.add_child(item_button)
+	item_button.scale = Vector2(16,16)
+	item_button.modulate.a = 0
+	item_button.name = "Button_" + str(item.get_instance_id())
+	item_button.pressed.connect(_on_item_button_pressed.bind(item, texture_rect, item_button))
+	
+#__________________________AREA 3D________________________________________________
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body is Hollow:
 		print("detected")
@@ -137,8 +148,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 func _on_area_3d_body_exited(body: Node3D) -> void:
 	if body is Hollow:
 		body.seen = false
-
-
 
 
 func _on_pickable_area_body_entered(body: Node3D) -> void:	

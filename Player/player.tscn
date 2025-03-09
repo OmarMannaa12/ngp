@@ -82,6 +82,22 @@ offset_bottom = 60.0
 scale = Vector2(1.35372, 1.57363)
 text = "To take the Item press E"
 
+[node name="CoinsLabel" type="Label" parent="CanvasLayer"]
+offset_left = 37.0
+offset_top = 236.0
+offset_right = 223.0
+offset_bottom = 259.0
+scale = Vector2(1.35372, 1.57363)
+text = "
+"
+
+[node name="Label2" type="Label" parent="CanvasLayer"]
+offset_left = 42.0
+offset_top = 106.0
+offset_right = 228.0
+offset_bottom = 129.0
+scale = Vector2(1.35372, 1.57363)
+
 [node name="ButtonLabel" type="Label" parent="CanvasLayer"]
 offset_left = 213.0
 offset_top = 470.0

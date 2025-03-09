@@ -1,23 +1,6 @@
-[gd_scene load_steps=15 format=4 uid="uid://vte7xr0i0c8d"]
+[gd_scene load_steps=6 format=4 uid="uid://cpccgxglpbowe"]
 
-[ext_resource type="Script" path="res://Game/Game.gd" id="1_3pq4s"]
-[ext_resource type="PackedScene" uid="uid://cv5jqn44unscs" path="res://Player/player.tscn" id="2_i2joy"]
-[ext_resource type="Script" path="res://omni_light_3d.gd" id="5_wgjbl"]
-[ext_resource type="Script" path="res://Game/exit_door.gd" id="5_xaqay"]
-[ext_resource type="PackedScene" uid="uid://wxs6sstck6n4" path="res://Hollow/hollow.tscn" id="6_1n8sy"]
-[ext_resource type="Script" path="res://Collectable/coin.gd" id="6_bfcmp"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_rj3o5"]
-
-[sub_resource type="Environment" id="Environment_m4ko1"]
-background_mode = 2
-fog_light_color = Color(0.261951, 0.28694, 0.326222, 1)
-fog_light_energy = 0.32
-fog_density = 0.0685
-
-[sub_resource type="BoxMesh" id="BoxMesh_x1sbq"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_kiab4"]
+[ext_resource type="Script" path="res://Collectable/coin.gd" id="1_w7rtm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjcgb"]
 
@@ -56,78 +39,14 @@ shadow_mesh = SubResource("ArrayMesh_dtq76")
 [sub_resource type="BoxShape3D" id="BoxShape3D_1tqjo"]
 size = Vector3(2.1853, 3.03015, 1.25293)
 
-[node name="Game" type="Node3D"]
-script = ExtResource("1_3pq4s")
+[node name="Coin" type="RigidBody3D"]
+script = ExtResource("1_w7rtm")
 
-[node name="Player" parent="." instance=ExtResource("2_i2joy")]
-
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18556, -24.4398)
-light_energy = 0.459
-script = ExtResource("5_wgjbl")
-
-[node name="Area3D" type="Area3D" parent="OmniLight3D"]
-transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="OmniLight3D/Area3D"]
-shape = SubResource("BoxShape3D_rj3o5")
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.2422, 2.18556, -5.44813)
-light_energy = 0.459
-script = ExtResource("5_wgjbl")
-
-[node name="Area3D" type="Area3D" parent="OmniLight3D2"]
-transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="OmniLight3D2/Area3D"]
-shape = SubResource("BoxShape3D_rj3o5")
-
-[node name="Hollow" parent="." instance=ExtResource("6_1n8sy")]
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(265.971, 0, 0, 0, 1, 0, 0, 0, 266.318, 0, -0.137825, -11.4434)
-use_collision = true
-size = Vector3(1, 1, 1.08594)
-
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.0234376, 0.999725, 0, -0.999725, 0.0234376, 0, 56.5428, -0.356255)
-spot_range = 123.092
-spot_attenuation = 0.52
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_m4ko1")
-
-[node name="Interactables" type="Node" parent="."]
-
-[node name="ExitDoor" type="StaticBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.95065, -11.0031)
-script = ExtResource("5_xaqay")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/ExitDoor"]
-transform = Transform3D(3.27366, 0, 0, 0, 5.21472, 0, 0, 0, 0.602175, 0, 0, 0)
-mesh = SubResource("BoxMesh_x1sbq")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/ExitDoor"]
-transform = Transform3D(3.27366, 0, 0, 0, 5.21472, 0, 0, 0, 0.602175, 0, 0, 0)
-shape = SubResource("BoxShape3D_kiab4")
-
-[node name="Pickables" type="Node" parent="."]
-
-[node name="Coin" type="RigidBody3D" parent="Pickables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.771252, -9.70344)
-script = ExtResource("6_bfcmp")
-
-[node name="Cylinder" type="MeshInstance3D" parent="Pickables/Coin"]
-transform = Transform3D(0.8, 0, -1.20797e-07, 0, -0.044, 0, 1.20797e-07, 0, 0.8, 0, 0, 0)
+[node name="Cylinder" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.199729, 0, -3.01582e-08, 0, -0.0109851, 0, 3.01582e-08, 0, 0.199729, 0, 0, 0)
 mesh = SubResource("ArrayMesh_e5qix")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Pickables/Coin"]
-transform = Transform3D(0.8, 0, -2.05354e-07, 0, -0.04, 0, 1.20797e-07, 0, 1.36, 7.87401e-05, 8.19564e-08, -0.000430798)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.2, 0, -2.97237e-08, 0, -0.01, 0, 1.74846e-08, 0, 0.34, 7.87401e-05, 8.19564e-08, -0.000430798)
 shape = SubResource("BoxShape3D_1tqjo")
-
-[connection signal="body_entered" from="OmniLight3D/Area3D" to="OmniLight3D" method="_on_area_3d_body_entered"]
-[connection signal="body_exited" from="OmniLight3D/Area3D" to="OmniLight3D" method="_on_area_3d_body_exited"]
-[connection signal="body_entered" from="OmniLight3D2/Area3D" to="OmniLight3D2" method="_on_area_3d_body_entered"]
-[connection signal="body_exited" from="OmniLight3D2/Area3D" to="OmniLight3D2" method="_on_area_3d_body_exited"]
