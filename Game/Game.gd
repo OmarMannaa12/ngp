@@ -1,5 +1,8 @@
 extends Node3D
 
+
+
+
 var timer: float:
 	set(value):
 		if value >= 1:
@@ -10,6 +13,20 @@ var timer: float:
 	get:
 		return timer
 func _ready() -> void:
+	match Globals.current_loop:
+			0:
+				pass
+			1:
+				if $Interactables.get_children():
+					for item: Node3D in $Interactables.get_children():
+						item.visible = false
+						item.process_mode = Node.PROCESS_MODE_DISABLED
+			2:
+				if $Interactables.get_children():
+					for item: Node3D in $Interactables.get_children():
+						item.visible = true
+						item.process_mode = Node.PROCESS_MODE_INHERIT
+					
 	$Player/CanvasLayer/Label.visible = false
 	$Hollow.activate_npc($Player)
 

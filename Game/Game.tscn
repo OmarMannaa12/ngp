@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://vte7xr0i0c8d"]
+[gd_scene load_steps=11 format=3 uid="uid://vte7xr0i0c8d"]
 
 [ext_resource type="Script" path="res://Game/Game.gd" id="1_3pq4s"]
 [ext_resource type="PackedScene" uid="uid://cv5jqn44unscs" path="res://Player/player.tscn" id="2_i2joy"]
 [ext_resource type="Script" path="res://omni_light_3d.gd" id="5_wgjbl"]
+[ext_resource type="Script" path="res://Game/exit_door.gd" id="5_xaqay"]
 [ext_resource type="PackedScene" uid="uid://wxs6sstck6n4" path="res://Hollow/hollow.tscn" id="6_1n8sy"]
 [ext_resource type="PackedScene" uid="uid://cpccgxglpbowe" path="res://collectable.tscn" id="7_voywx"]
 
@@ -13,6 +14,10 @@ background_mode = 2
 fog_light_color = Color(0.261951, 0.28694, 0.326222, 1)
 fog_light_energy = 0.32
 fog_density = 0.0685
+
+[sub_resource type="BoxMesh" id="BoxMesh_x1sbq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kiab4"]
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_3pq4s")
@@ -56,10 +61,26 @@ spot_attenuation = 0.52
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_m4ko1")
 
-[node name="Collectable" parent="." instance=ExtResource("7_voywx")]
+[node name="Interactables" type="Node" parent="."]
+
+[node name="ExitDoor" type="StaticBody3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.95065, -11.0031)
+script = ExtResource("5_xaqay")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/ExitDoor"]
+transform = Transform3D(3.27366, 0, 0, 0, 5.21472, 0, 0, 0, 0.602175, 0, 0, 0)
+mesh = SubResource("BoxMesh_x1sbq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/ExitDoor"]
+transform = Transform3D(3.27366, 0, 0, 0, 5.21472, 0, 0, 0, 0.602175, 0, 0, 0)
+shape = SubResource("BoxShape3D_kiab4")
+
+[node name="Pickables" type="Node" parent="."]
+
+[node name="Pickable" parent="Pickables" instance=ExtResource("7_voywx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.54111, 1.04887, 16.3347)
 
-[node name="Collectable2" parent="." instance=ExtResource("7_voywx")]
+[node name="Collectable2" parent="Pickables" instance=ExtResource("7_voywx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.54111, 1.04887, 6.45579)
 
 [connection signal="body_entered" from="OmniLight3D/Area3D" to="OmniLight3D" method="_on_area_3d_body_entered"]

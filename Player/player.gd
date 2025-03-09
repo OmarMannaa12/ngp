@@ -13,6 +13,7 @@ const JUMP_VELOCITY = 6.0
 const MOUSE_SENSITIVITY = 0.1
 
 var pickable_items: Array[Collectable] = []
+var interactable_items: Array[Interactable] = []
 var inventory: Array[Collectable] = []
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -68,7 +69,7 @@ func _unhandled_input(event):
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 	if event.is_action_pressed("ui_take"):
-		if inventory.size() < 5:
+		if inventory.size() < 5 and pickable_items.size() > 0:
 			for item: Collectable in pickable_items:
 				if inventory.size() < 5:
 					main_label.visible = false
@@ -90,10 +91,16 @@ func _unhandled_input(event):
 				
 					item_button.name = "Button_" + str(item.get_instance_id())
 					item_button.pressed.connect(_on_item_button_pressed.bind(item, texture_rect, item_button))
-		else:
+			return
+		elif pickable_items.size() > 0:
 			main_label.visible = true
 			main_label.text = "Full inventory"
 			
+		if interactable_items.size() > 0:
+			match interactable_items[0].type:
+				1:
+					get_tree().reload_current_scene()
+	
 	if event.is_action_pressed("ui_remove"):
 		print(item_selected and selected_item and selected_item_rect)
 		if item_selected and selected_item and selected_item_rect:
@@ -139,9 +146,19 @@ func _on_pickable_area_body_entered(body: Node3D) -> void:
 		main_label.visible = true
 		main_label.text = "To take the Item press E"
 		pickable_items.push_back(body)
-
+	
+	if body is Interactable and body.visible == true:
+		main_label.visible = true
+		main_label.text = "To interact press E"
+		interactable_items.push_back(body)
+		
 func _on_pickable_area_body_exited(body: Node3D) -> void:
 	if body is Collectable:
 		pickable_items.erase(body)
 		if pickable_items.size() == 0:
+			main_label.visible = false
+	
+	if body is Interactable:
+		interactable_items.erase(body)
+		if interactable_items.size() == 0:
 			main_label.visible = false
