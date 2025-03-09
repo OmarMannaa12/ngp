@@ -1,4 +1,4 @@
-class_name Interactable extends Node3D
+class_name Interactable extends StaticBody3D
 
 enum Types {
 	DOOR,

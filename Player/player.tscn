@@ -1,8 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://cv5jqn44unscs"]
+[gd_scene load_steps=13 format=3 uid="uid://cv5jqn44unscs"]
 
 [ext_resource type="Script" path="res://Player/player.gd" id="1_u3kky"]
 [ext_resource type="Script" path="res://Player/camera_3d.gd" id="2_mamrp"]
 [ext_resource type="Texture2D" uid="uid://cekplctqx0qav" path="res://icon.svg" id="3_s01bs"]
+[ext_resource type="AudioStream" uid="uid://btf4w831ks21q" path="res://Audio/Player related/Coin Pickup.mp3" id="4_mb5e0"]
+[ext_resource type="AudioStream" uid="uid://cf3v1ae5emjwe" path="res://Audio/Player related/Playerfoot.mp3" id="5_ip2kh"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ayvw2"]
 
@@ -105,6 +107,15 @@ offset_right = 356.0
 offset_bottom = 519.0
 text = "Press Space to use
 Press R to remove"
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="CoinPickup" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("4_mb5e0")
+
+[node name="Playerfoot" type="AudioStreamPlayer3D" parent="Audio"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.29612, 0)
+stream = ExtResource("5_ip2kh")
 
 [connection signal="body_entered" from="Vision/Area3D" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="Vision/Area3D" to="." method="_on_area_3d_body_exited"]

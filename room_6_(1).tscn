@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxpi1m0ji2l1j"]
+
+[ext_resource type="PackedScene" uid="uid://bo0xfep0t3d4v" path="res://Collectable/Assets/Room 6 (1).glb" id="1_cs3bx"]
+
+[node name="Room 6 (1)" instance=ExtResource("1_cs3bx")]
+
+[node name="sINK_001" parent="." index="28"]
+transform = Transform3D(0.401032, 0, 0, 0, 0.357771, 0, 0, 0, 0.229809, -0.540724, 1.58873, 5.93351)

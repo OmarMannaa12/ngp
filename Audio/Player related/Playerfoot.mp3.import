@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cf3v1ae5emjwe"
+path="res://.godot/imported/Playerfoot.mp3-e1144c05cb39356c93607aea6196542c.mp3str"
+
+[deps]
+
+source_file="res://Audio/Player related/Playerfoot.mp3"
+dest_files=["res://.godot/imported/Playerfoot.mp3-e1144c05cb39356c93607aea6196542c.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

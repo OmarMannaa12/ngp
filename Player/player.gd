@@ -17,6 +17,7 @@ var coins: int:
 		if value < 0:
 			value = 0
 		coins = value
+		coin_pickup_sound.play()
 		coins_label.text = str("Coins: ", coins)
 
 var pickable_items: Array[Collectable] = []
@@ -32,6 +33,14 @@ var selected_item_rect: TextureRect
 @onready var main_label = $CanvasLayer/Label
 @onready var button_label = $CanvasLayer/ButtonLabel
 @onready var coins_label = $CanvasLayer/CoinsLabel
+
+@onready var coin_pickup_sound: AudioStreamPlayer = $Audio/CoinPickup
+@onready var player_foot_sound: AudioStreamPlayer3D = $Audio/Playerfoot
+
+
+
+
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	button_label.visible = false
@@ -56,6 +65,8 @@ func _physics_process(delta):
 		direction = direction.normalized()
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
+		if not player_foot_sound.playing:
+			player_foot_sound.play()
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
@@ -100,6 +111,8 @@ func _unhandled_input(event):
 			match interactable_items[0].type:
 				1:
 					get_tree().reload_current_scene()
+				2: #Vending Machine
+					coins -= 1
 	
 	if event.is_action_pressed("ui_remove"):
 		print(item_selected and selected_item and selected_item_rect)
