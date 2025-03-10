@@ -1,17 +1,16 @@
 class_name Player extends CharacterBody3D
 
-var SPEED: float = 10.0:
+var SPEED: float = 2.0:
 		set(value):
 			if value <= 1:
 				SPEED = 1
 			else:
 				SPEED = value
+			bob_value = Vector2(SPEED / 200,  SPEED / 60)
 			print ("Speed: " , SPEED)
 		get:
 			return SPEED
-const JUMP_VELOCITY = 6.0
-const MOUSE_SENSITIVITY = 0.1
-
+			
 var coins: int:
 	set(value):
 		if value < 0:
@@ -20,18 +19,23 @@ var coins: int:
 		coin_pickup_sound.play()
 		coins_label.text = str("Coins: ", coins)
 
+
+const JUMP_VELOCITY = 6.0
+const MOUSE_SENSITIVITY = 0.1
+
 var pickable_items: Array[Collectable] = []
 var interactable_items: Array[Interactable] = []
-var inventory: Array[Collectable] = []
+
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-var item_selected: bool
-var selected_item: Collectable
-var selected_item_rect: TextureRect
+var original_cam_pos: Vector3
+
+
+var bobbing_time: float
+var bob_value: Vector2 = Vector2(SPEED / 200,  SPEED / 60)
 
 @onready var camera = $Camera3D
 @onready var main_label = $CanvasLayer/Label
-@onready var button_label = $CanvasLayer/ButtonLabel
 @onready var coins_label = $CanvasLayer/CoinsLabel
 
 @onready var coin_pickup_sound: AudioStreamPlayer = $Audio/CoinPickup
@@ -42,16 +46,15 @@ var selected_item_rect: TextureRect
 
 
 func _ready():
+	original_cam_pos = camera.position
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	button_label.visible = false
 
 func _physics_process(delta):
-	$CanvasLayer/Label2.text = "FPS: " + str(Engine.get_frames_per_second())
 	if not is_on_floor():
-			velocity.y -= gravity * delta
+		velocity.y -= gravity * delta
 	
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-			velocity.y = JUMP_VELOCITY
+		velocity.y = JUMP_VELOCITY
 
 	var input_dir = Input.get_vector("ui_left", "ui_right", "ui_down", "ui_up")
 	var cam_forward = -camera.global_transform.basis.z
@@ -61,15 +64,20 @@ func _physics_process(delta):
 	cam_forward = cam_forward.normalized(); cam_right = cam_right.normalized()
 	
 	var direction = (cam_right * input_dir.x + cam_forward * input_dir.y)
+	
 	if direction:
 		direction = direction.normalized()
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
-		if not player_foot_sound.playing:
-			player_foot_sound.play()
+
+		bobbing_time += delta * SPEED * 3
+		camera.position = original_cam_pos + Vector3(cos(bobbing_time * 0.5) * bob_value.x,sin(bobbing_time) * bob_value.y, 0)
+
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+		
+		camera.position = camera.position.lerp(original_cam_pos, 0.05) 
 
 	move_and_slide()
 
@@ -88,68 +96,29 @@ func _unhandled_input(event):
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 	if event.is_action_pressed("ui_take"):
-		if inventory.size() < 5 and pickable_items.size() > 0:
+		if pickable_items.size() > 0:
 			for item: Collectable in pickable_items:
-				if inventory.size() < 5:
-					if item.type == 0: # Coin
-						coins += 1
-					else:
-						UIinventory_add(item)
-					item.visible = false
-					item.process_mode = PROCESS_MODE_DISABLED
-					pickable_items.erase(item)
-					inventory.push_back(item)
+				if item.type == 0: # Coin
+					coins += 1
+				else:
+					pass
+				item.visible = false
+				item.process_mode = PROCESS_MODE_DISABLED
+				pickable_items.erase(item)
 
-					SPEED -= item.weight
 			main_label.visible = false
 			return
-		elif pickable_items.size() > 0:
-			main_label.visible = true
-			main_label.text = "Full inventory"
+			
 			
 		if interactable_items.size() > 0:
 			match interactable_items[0].type:
-				1:
+				1: #Exit Door
 					get_tree().reload_current_scene()
 				2: #Vending Machine
-					coins -= 1
+					if coins >= 3:
+						coins -= 3
 	
-	if event.is_action_pressed("ui_remove"):
-		print(item_selected and selected_item and selected_item_rect)
-		if item_selected and selected_item and selected_item_rect:
-			
-			selected_item.process_mode = PROCESS_MODE_INHERIT
-			selected_item.position = self.position + Vector3(2,4,2)
-			print(selected_item.global_position, self.global_position)
-			inventory.erase(selected_item)
-			SPEED += selected_item.weight
-			selected_item_rect.queue_free()
-			
-			selected_item.visible = true
-			selected_item = null
 
-			item_selected = false
-			button_label.visible = false
-
-func _on_item_button_pressed(item: Collectable, texture_rect: TextureRect, item_button:Button):
-	
-	button_label.global_position = Vector2(item_button.global_position.x, item_button.global_position.y - 50)
-	button_label.visible = true
-	item_selected = true
-	selected_item = item
-	selected_item_rect = texture_rect
-	
-func UIinventory_add(item) -> void:
-	var texture_rect = TextureRect.new()
-	var item_button = Button.new()
-	texture_rect.texture = preload("res://icon.svg")
-	$CanvasLayer/Items.add_child(texture_rect)
-	texture_rect.add_child(item_button)
-	item_button.scale = Vector2(16,16)
-	item_button.modulate.a = 0
-	item_button.name = "Button_" + str(item.get_instance_id())
-	item_button.pressed.connect(_on_item_button_pressed.bind(item, texture_rect, item_button))
-	
 #__________________________AREA 3D________________________________________________
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body is Hollow:

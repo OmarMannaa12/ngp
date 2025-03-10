@@ -1,19 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://teh2bo674otj"]
+[gd_scene load_steps=4 format=3 uid="uid://teh2bo674otj"]
 
 [ext_resource type="Script" path="res://Main/main.gd" id="1_nq03a"]
+[ext_resource type="PackedScene" uid="uid://bxpi1m0ji2l1j" path="res://room_6_(1).tscn" id="2_7ifpu"]
 
-[node name="Main" type="Node2D"]
-position = Vector2(-0.0043143, 0)
+[sub_resource type="Environment" id="Environment_bk6h2"]
+background_mode = 2
+
+[node name="Main" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0043143, 0, 0)
+visible = false
 script = ExtResource("1_nq03a")
 
-[node name="Panel" type="Panel" parent="."]
-offset_left = 344.004
-offset_top = 87.0
-offset_right = 384.004
-offset_bottom = 127.0
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
+offset_left = 71.0
+offset_top = 101.0
+offset_right = 111.0
+offset_bottom = 141.0
 scale = Vector2(8.59266, 10.3468)
 
-[node name="StartButton" type="Button" parent="Panel"]
+[node name="StartButton" type="Button" parent="CanvasLayer/Panel"]
 layout_mode = 0
 offset_left = 12.4525
 offset_top = 3.79514
@@ -22,7 +29,7 @@ offset_bottom = 34.7951
 scale = Vector2(0.289499, 0.224397)
 text = "Start"
 
-[node name="SettingsButton" type="Button" parent="Panel"]
+[node name="SettingsButton" type="Button" parent="CanvasLayer/Panel"]
 layout_mode = 0
 offset_left = 9.42665
 offset_top = 16.2369
@@ -31,7 +38,7 @@ offset_bottom = 47.2369
 scale = Vector2(0.289499, 0.224397)
 text = "Settings"
 
-[node name="Button3" type="Button" parent="Panel"]
+[node name="Button3" type="Button" parent="CanvasLayer/Panel"]
 layout_mode = 0
 offset_left = 10.2413
 offset_top = 27.6415
@@ -40,4 +47,33 @@ offset_bottom = 58.6415
 scale = Vector2(0.289499, 0.224397)
 text = "Credits"
 
-[connection signal="pressed" from="Panel/StartButton" to="." method="_on_start_button_pressed"]
+[node name="Room 6 (1)" parent="." instance=ExtResource("2_7ifpu")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bk6h2")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.0718979, 0, -0.997412, 0, 1, 0, 0.997412, 0, 0.0718979, 0.717225, 1.01365, -0.323412)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.951127, 0.587351, 0.217754)
+light_energy = 0.2
+
+[node name="Label" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0.678431)
+offset_left = 669.0
+offset_top = 171.0
+offset_right = 780.0
+offset_bottom = 376.0
+scale = Vector2(2.06958, 1.24325)
+text = "Music and SFX
+Gianlu
+3D models
+Chico
+Game desgin
+Pixigb
+Programming
+Omar"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="CanvasLayer/Panel/StartButton" to="." method="_on_start_button_pressed"]

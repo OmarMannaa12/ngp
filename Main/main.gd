@@ -1,14 +1,22 @@
-extends Node2D
+extends Node3D
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+var timer: float:
+	set(value):
+		if value >= 2:
+			flick($OmniLight3D)
+			timer = 0
+		else:
+			timer = value
+	get:
+		return timer
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	timer += randf_range(1,10) * delta
+func flick(light: Light3D):
+	light.light_energy = randf_range(0.14 , 0.18)
+
 
 
 
